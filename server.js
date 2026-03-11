@@ -32,9 +32,9 @@ app.post('/enviar-comprovante', upload.single('comprovante'), async (req, res) =
         });
 
         // 2. Enviar os Dados (WhatsApp e URL) em uma mensagem separada para garantir o recebimento
-        const textMsg = `✅ *NOVO COMPROVANTE RECEBIDO*\n\n` +
-                        `📱 *WhatsApp:* ${whatsapp}\n` +
-                        `🔗 *URL do Produto:* ${url}`;
+        const textMsg = `✅ *NOVA CONSULTA DE PRODUTO*\n\n` +
+                        `*WhatsApp:* ${whatsapp}\n` +
+                        `*URL do Produto:* ${url}`;
 
         await axios.post(`https://api.telegram.org/bot${botToken}/sendMessage`, {
             chat_id: chatId,
