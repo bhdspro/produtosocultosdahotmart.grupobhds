@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Desbloqueio Quântico</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Biblioteca para gerar QR Code Dinâmico -->
@@ -22,23 +22,14 @@
             background-color: var(--dark-bg);
             color: white;
             font-family: 'Rajdhani', sans-serif;
-            overflow: hidden; /* Mantém o fundo fixo */
+            overflow: hidden;
             margin: 0;
             padding: 0;
-            height: 100dvh; /* Usa dynamic viewport height para mobile */
+            height: 100vh;
             width: 100vw;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        /* Ocultar Barra de Rolagem (Cross-browser) */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
         }
 
         /* Efeito de Grade Futurista no Fundo */
@@ -86,7 +77,7 @@
             border: 1px solid rgba(0, 240, 255, 0.5);
             color: var(--neon-cyan);
             font-family: 'Share Tech Mono', monospace;
-            padding: 0.8rem 1rem;
+            padding: 1rem;
             border-radius: 8px;
             outline: none;
             transition: all 0.3s ease;
@@ -108,12 +99,12 @@
             font-family: 'Orbitron', sans-serif;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             background: linear-gradient(90deg, #0055ff, var(--neon-cyan));
             color: white;
             border: none;
             border-radius: 50px;
-            padding: 0.8rem 1.5rem;
+            padding: 1rem 2rem;
             width: 100%;
             cursor: pointer;
             position: relative;
@@ -236,11 +227,11 @@
             background: rgba(0, 240, 255, 0.1);
             color: var(--neon-cyan);
             border: 1px solid var(--neon-cyan);
-            padding: 0.3rem 0.8rem;
+            padding: 0.5rem 1rem;
             border-radius: 4px;
             cursor: pointer;
             transition: all 0.3s;
-            margin-right: 0.5rem;
+            margin-right: 1rem;
         }
         input[type="file"]::file-selector-button:hover {
             background: var(--neon-cyan);
@@ -251,10 +242,10 @@
         #qrcode img, #qrcode canvas {
             margin: 0 auto;
             border-radius: 8px;
-            padding: 8px;
+            padding: 10px;
             background: rgba(0,0,0,0.8);
             border: 1px solid rgba(0, 240, 255, 0.3);
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3), inset 0 0 10px rgba(0, 240, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3), inset 0 0 15px rgba(0, 240, 255, 0.2);
         }
     </style>
 </head>
@@ -264,18 +255,18 @@
     <canvas id="particleCanvas"></canvas>
     <div class="cyber-grid"></div>
 
-    <!-- Container Principal (Otimizado para Mobile e sem Scrollbar visível) -->
-    <main class="relative z-10 w-11/12 max-w-md mx-auto flex flex-col items-center max-h-[100dvh] overflow-y-auto no-scrollbar py-4">
+    <!-- Container Principal (Otimizado para Mobile) -->
+    <main class="relative z-10 w-11/12 max-w-md mx-auto flex flex-col items-center">
         
         <!-- Fase 1: Entrada de Dados -->
-        <div id="step-1" class="w-full flex flex-col items-center space-y-6 transition-opacity duration-500 my-auto">
+        <div id="step-1" class="w-full flex flex-col items-center space-y-8 transition-opacity duration-500">
             
             <h1 class="text-3xl md:text-4xl text-center font-black glitch-effect">
                 Desbloqueie seu<br>
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">Produto Oculto</span>
             </h1>
 
-            <div class="w-full relative mt-4">
+            <div class="w-full relative">
                 <input 
                     type="url" 
                     id="urlInput" 
@@ -286,14 +277,14 @@
                 <div id="error-msg" class="text-center font-bold">⚠️ Insira uma URL válida para continuar.</div>
             </div>
 
-            <button id="btn-unlock" class="cyber-btn mt-2">
+            <button id="btn-unlock" class="cyber-btn mt-4">
                 Desbloquear Agora
             </button>
             
         </div>
 
         <!-- Fase 2: Terminal de Desbloqueio (Oculto Inicialmente) -->
-        <div id="step-2" class="w-full hidden-el flex-col items-stretch space-y-6 my-auto">
+        <div id="step-2" class="w-full hidden-el flex-col items-stretch space-y-6">
             
             <div class="terminal-container min-h-[250px] flex flex-col justify-start">
                 <div id="terminal-text" class="text-cyan-400 text-sm md:text-base mb-4"></div>
@@ -312,50 +303,50 @@
 
         </div>
 
-        <!-- Fase 3: Pagamento e Comprovante (Layout Ajustado para não gerar scroll) -->
-        <div id="step-3" class="w-full hidden-el flex-col items-center space-y-3 pb-2 my-auto">
+        <!-- Fase 3: Pagamento e Comprovante (Oculto Inicialmente) -->
+        <div id="step-3" class="w-full hidden-el flex-col items-center space-y-6 overflow-y-auto max-h-[90vh] pb-8">
             
-            <h2 class="text-xl md:text-2xl text-center font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-cyan-500 font-['Orbitron'] glitch-effect">
+            <h2 class="text-2xl text-center font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-cyan-500 font-['Orbitron'] glitch-effect">
                 ACESSO LIBERADO
             </h2>
-            <p class="text-center text-xs md:text-sm text-gray-300 leading-tight">Realize o pagamento para finalizar o desbloqueio definitivo.</p>
+            <p class="text-center text-sm text-gray-300">Realize o pagamento para finalizar o desbloqueio definitivo.</p>
 
-            <!-- QR Code Dinâmico Futurista (Menor para caber perfeitamente) -->
-            <div class="p-2 rounded-xl relative w-full flex justify-center">
+            <!-- QR Code Dinâmico Futurista -->
+            <div class="p-4 rounded-xl relative w-full flex justify-center mt-2">
                 <div id="qrcode"></div>
                 <!-- Linha de escaneamento sobre o QR Code -->
-                <div class="absolute inset-0 mx-auto w-36 bg-gradient-to-b from-transparent via-cyan-400/40 to-transparent h-1 animate-[scanline_2s_linear_infinite] pointer-events-none rounded-lg"></div>
+                <div class="absolute inset-0 mx-auto w-48 bg-gradient-to-b from-transparent via-cyan-400/40 to-transparent h-1 animate-[scanline_2s_linear_infinite] pointer-events-none rounded-lg"></div>
             </div>
 
             <!-- Botão Copia e Cola -->
-            <button id="btn-copy-pix" class="cyber-btn text-xs py-2 w-full max-w-[280px]">
+            <button id="btn-copy-pix" class="cyber-btn text-sm py-2 mt-2">
                 📋 Copiar Pix Copia e Cola
             </button>
-            <div id="copy-feedback" class="text-green-400 text-xs font-bold opacity-0 transition-opacity absolute mt-[-10px]">Pix Copiado com sucesso!</div>
+            <div id="copy-feedback" class="text-green-400 text-sm font-bold opacity-0 transition-opacity">Pix Copiado com sucesso!</div>
 
-            <!-- Formulário de Envio Ajustado -->
-            <div class="w-full space-y-2 mt-1 bg-black/50 p-3 border border-cyan-900 rounded-lg">
-                <label class="text-[10px] md:text-xs text-cyan-400 uppercase tracking-wider font-bold block mb-1">1. Seu WhatsApp</label>
+            <!-- Formulário de Envio -->
+            <div class="w-full space-y-4 mt-2 bg-black/50 p-4 border border-cyan-900 rounded-lg">
+                <label class="text-xs text-cyan-400 uppercase tracking-wider font-bold">1. Seu WhatsApp</label>
                 <input 
                     type="tel" 
                     id="whatsappInput" 
-                    class="cyber-input text-center text-xs md:text-sm py-2" 
+                    class="cyber-input text-center text-sm" 
                     placeholder="Ex: 43999999999"
                 >
 
-                <label class="text-[10px] md:text-xs text-cyan-400 uppercase tracking-wider font-bold block mt-2 mb-1">2. Anexar Comprovante</label>
-                <div class="flex flex-col sm:flex-row gap-2 items-center w-full">
+                <label class="text-xs text-cyan-400 uppercase tracking-wider font-bold block mt-4">2. Anexar Comprovante</label>
+                <div class="flex flex-col md:flex-row gap-3 items-center w-full">
                     <input 
                         type="file" 
                         id="proofInput" 
                         accept="image/*,.pdf" 
-                        class="cyber-input w-full text-xs p-1"
+                        class="cyber-input w-full text-xs p-2"
                     >
-                    <button id="btn-send-proof" class="cyber-btn magenta-theme w-full sm:w-auto text-xs py-2 px-4 whitespace-nowrap">
+                    <button id="btn-send-proof" class="cyber-btn magenta-theme w-full md:w-auto text-sm py-3 px-6 whitespace-nowrap">
                         Enviar
                     </button>
                 </div>
-                <div id="form-error-msg" class="text-center text-red-500 font-bold text-xs opacity-0 transition-opacity mt-1">⚠️ Preencha tudo!</div>
+                <div id="form-error-msg" class="text-center text-red-500 font-bold text-sm opacity-0 transition-opacity">⚠️ Preencha o WhatsApp e anexe o comprovante!</div>
             </div>
 
         </div>
@@ -364,7 +355,7 @@
 
     <script>
         // --- CONFIGURAÇÃO: Coloque aqui a URL do seu backend no Render ---
-        const BACKEND_URL = "https://SEU-APP-NO-RENDER.onrender.com/enviar-comprovante";
+        const BACKEND_URL = "https://produtosocultosdahotmart.onrender.com/enviar-comprovante";
 
         // --- 1. Efeitos de Partículas no Fundo (Canvas) ---
         const canvas = document.getElementById('particleCanvas');
@@ -458,11 +449,12 @@
             const urlValue = inputUrl.value.trim();
             
             // Validação de URL exigida (Hotmart) com obrigatoriedade de ID
+            // Aceita: http ou https://pay.hotmart.com/ e exige que tenha caracteres alfa-numéricos depois
             const regexHotmartComID = /^https?:\/\/(pay|payment)\.hotmart\.com\/([a-zA-Z0-9]{5,})/i;
             const match = urlValue.match(regexHotmartComID);
 
             if (!urlValue || !match) {
-                errorMsg.innerText = "⚠️ Insira a URL completa com o ID (Ex: pay.hotmart.com/J968569...)";
+                errorMsg.innerText = "⚠️ Insira a URL completa com o ID do produto (Ex: pay.hotmart.com/J968569...)";
                 errorMsg.style.opacity = '1';
                 inputUrl.style.borderColor = 'var(--neon-magenta)';
                 setTimeout(() => {
@@ -505,25 +497,27 @@
             }, 50);
         });
 
-        // Função principal do Botão 2 (Acessar Produto) - Leva para a Etapa 3
+        // Função principal do Botão 2 (Acessar Produto) - Agora leva para a Etapa 3
         btnAccess.addEventListener('click', async () => {
+            // Feedback visual
             btnAccess.innerText = "LIBERANDO ACESSO...";
             btnAccess.style.opacity = "0.7";
 
             await sleep(800);
 
+            // Transição para Etapa 3 (Pagamento)
             step2.style.display = 'none';
             step3.classList.remove('hidden-el');
 
-            // Gera o QR Code dinâmico com tamanho reduzido para evitar scroll
+            // Gera o QR Code dinâmico com estilo futurista
             const qrcodeContainer = document.getElementById("qrcode");
             if (qrcodeContainer.innerHTML.trim() === "") {
                 new QRCode(qrcodeContainer, {
                     text: pixString,
-                    width: 130, // Reduzido
-                    height: 130, // Reduzido
-                    colorDark : "#00f0ff", 
-                    colorLight : "#000000",
+                    width: 180,
+                    height: 180,
+                    colorDark : "#00f0ff", // Ciano Neon
+                    colorLight : "#000000", // Preto profundo
                     correctLevel : QRCode.CorrectLevel.L
                 });
             }
@@ -557,7 +551,7 @@
             setTimeout(() => { copyFeedback.style.opacity = '0'; }, 3000);
         }
 
-        // --- Lógica de Envio de Comprovante (Com tratamento de erro extra) ---
+        // --- Lógica de Envio de Comprovante ---
         btnSendProof.addEventListener('click', async () => {
             const wppValue = whatsappInput.value.trim();
             const fileValue = proofInput.files[0];
@@ -566,12 +560,6 @@
             if (!wppValue || !fileValue) {
                 formErrorMsg.style.opacity = '1';
                 setTimeout(() => { formErrorMsg.style.opacity = '0'; }, 3000);
-                return;
-            }
-
-            // AVISO EVIDENTE DE ERRO DE URL (Resolve Erro 1 Silencioso)
-            if (BACKEND_URL.includes("SEU-APP-NO-RENDER")) {
-                alert("🚨 ERRO CRÍTICO: Você não alterou o link do BACKEND_URL no código do site! Insira o link gerado pelo Render.");
                 return;
             }
 
@@ -586,7 +574,6 @@
             formData.append('comprovante', fileValue);
 
             try {
-                // Tentativa de envio para o render
                 const response = await fetch(BACKEND_URL, {
                     method: 'POST',
                     body: formData
@@ -597,22 +584,16 @@
                     btnSendProof.classList.remove('magenta-theme');
                     btnSendProof.style.background = "linear-gradient(90deg, #00b09b, #96c93d)";
                 } else {
-                    // Erro retornado pelo servidor
-                    const errData = await response.json();
-                    throw new Error(errData.error || "Erro interno do servidor backend");
+                    throw new Error("Falha na resposta do servidor");
                 }
             } catch (error) {
-                console.error("LOG DE ERRO DA API:", error);
-                
-                // Exibe alert nativo para o desenvolvedor saber exatamente o que falhou (Erro de CORS, URL errada, etc)
-                alert(`Falha no Envio:\n${error.message}\n\nAbra o console do navegador (F12) para mais detalhes.`);
-                
+                console.error("Erro ao enviar:", error);
                 btnSendProof.innerText = "❌ ERRO! TENTE NOVAMENTE";
                 setTimeout(() => {
                     btnSendProof.innerText = originalBtnText;
                     btnSendProof.disabled = false;
                     btnSendProof.style.opacity = "1";
-                }, 4000);
+                }, 3000);
             }
         });
 
