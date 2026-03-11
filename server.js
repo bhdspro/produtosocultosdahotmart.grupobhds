@@ -55,6 +55,12 @@ app.post('/enviar-comprovante', upload.single('comprovante'), async (req, res) =
         res.status(200).json({ success: true, message: 'Comprovante enviado com sucesso!' });
 
     } catch (error) {
+        // Tratamento específico para o erro 403 (Bot enviando para Bot)
+        if (error.response && error.response.data && error.response.data.error_code === 403) {
+            console.error("Erro 403: O TELEGRAM_CHAT_ID configurado pertence a um bot. Bots não podem enviar mensagens para bots. Use o ID do seu usuário ou grupo.");
+            return res.status(500).json({ error: 'Erro de configuração: ID do Chat inválido (403).' });
+        }
+        
         console.error("Erro ao enviar para o Telegram:", error.response ? error.response.data : error.message);
         res.status(500).json({ error: 'Falha ao processar o envio para o Telegram.' });
     }
