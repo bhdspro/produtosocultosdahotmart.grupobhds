@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Produtos Ocultos da Hotmart</title>
+    <title>Desbloqueio Quântico</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Biblioteca para gerar QR Code Dinâmico -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -20,7 +22,7 @@
             background-color: var(--dark-bg);
             color: white;
             font-family: 'Rajdhani', sans-serif;
-            overflow: hidden; /* Previne rolagem indesejada nos efeitos visuais */
+            overflow: hidden;
             margin: 0;
             padding: 0;
             height: 100vh;
@@ -152,10 +154,7 @@
             content: " ";
             display: block;
             position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
+            top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
             z-index: 2;
             background-size: 100% 2px, 3px 100%;
@@ -238,6 +237,16 @@
             background: var(--neon-cyan);
             color: var(--dark-bg);
         }
+
+        /* Estilização futurista do QR Code gerado */
+        #qrcode img, #qrcode canvas {
+            margin: 0 auto;
+            border-radius: 8px;
+            padding: 10px;
+            background: rgba(0,0,0,0.8);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3), inset 0 0 15px rgba(0, 240, 255, 0.2);
+        }
     </style>
 </head>
 <body>
@@ -262,7 +271,7 @@
                     type="url" 
                     id="urlInput" 
                     class="cyber-input text-center text-sm md:text-base" 
-                    placeholder="Cole a URL do produto aqui..."
+                    placeholder="Cole a URL de acesso aqui..."
                     autocomplete="off"
                 >
                 <div id="error-msg" class="text-center font-bold">⚠️ Insira uma URL válida para continuar.</div>
@@ -295,26 +304,28 @@
         </div>
 
         <!-- Fase 3: Pagamento e Comprovante (Oculto Inicialmente) -->
-        <div id="step-3" class="w-full hidden-el flex-col items-center space-y-6">
+        <div id="step-3" class="w-full hidden-el flex-col items-center space-y-6 overflow-y-auto max-h-[90vh] pb-8">
             
             <h2 class="text-2xl text-center font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-cyan-500 font-['Orbitron'] glitch-effect">
                 ACESSO LIBERADO
             </h2>
             <p class="text-center text-sm text-gray-300">Realize o pagamento para finalizar o desbloqueio definitivo.</p>
 
-            <!-- QR Code -->
-            <div class="p-2 border-2 border-cyan-400 rounded-xl shadow-[0_0_20px_rgba(0,240,255,0.4)] bg-white/5 backdrop-blur-sm">
-                <img src="https://produtosocultosdahotmart.grupobhds.com/qr-code.png" alt="QR Code Pix" class="w-48 h-48 md:w-56 md:h-56 object-cover rounded-lg">
+            <!-- QR Code Dinâmico Futurista -->
+            <div class="p-4 rounded-xl relative w-full flex justify-center mt-2">
+                <div id="qrcode"></div>
+                <!-- Linha de escaneamento sobre o QR Code -->
+                <div class="absolute inset-0 mx-auto w-48 bg-gradient-to-b from-transparent via-cyan-400/40 to-transparent h-1 animate-[scanline_2s_linear_infinite] pointer-events-none rounded-lg"></div>
             </div>
 
             <!-- Botão Copia e Cola -->
-            <button id="btn-copy-pix" class="cyber-btn text-sm py-2">
+            <button id="btn-copy-pix" class="cyber-btn text-sm py-2 mt-2">
                 📋 Copiar Pix Copia e Cola
             </button>
             <div id="copy-feedback" class="text-green-400 text-sm font-bold opacity-0 transition-opacity">Pix Copiado com sucesso!</div>
 
             <!-- Formulário de Envio -->
-            <div class="w-full space-y-4 mt-4 bg-black/50 p-4 border border-cyan-900 rounded-lg">
+            <div class="w-full space-y-4 mt-2 bg-black/50 p-4 border border-cyan-900 rounded-lg">
                 <label class="text-xs text-cyan-400 uppercase tracking-wider font-bold">1. Seu WhatsApp</label>
                 <input 
                     type="tel" 
@@ -344,7 +355,7 @@
 
     <script>
         // --- CONFIGURAÇÃO: Coloque aqui a URL do seu backend no Render ---
-        const BACKEND_URL = "https://produtosocultosdahotmart.onrender.com/enviar-comprovante";
+        const BACKEND_URL = "https://SEU-APP-NO-RENDER.onrender.com/enviar-comprovante";
 
         // --- 1. Efeitos de Partículas no Fundo (Canvas) ---
         const canvas = document.getElementById('particleCanvas');
@@ -415,6 +426,9 @@
         const btnSendProof = document.getElementById('btn-send-proof');
         const formErrorMsg = document.getElementById('form-error-msg');
 
+        // String PIX solicitada
+        const pixString = "00020101021126770014br.gov.bcb.pix0122chavepix@grupobhds.com0229Consulta de Produtos  Hotmart52040000530398654041.005802BR5918BRUNO H DOS SANTOS6008LONDRINA62070503***63043858";
+
         // Função de utilidade para pausas assíncronas
         const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -432,15 +446,15 @@
 
         // Função principal do Botão 1 (Desbloquear)
         btnUnlock.addEventListener('click', async () => {
-            const urlValue = inputUrl.value.trim().toLowerCase();
+            const urlValue = inputUrl.value.trim();
             
-            // Validação de URL exigida (Hotmart)
-            const isValidUrl = urlValue.startsWith('https://pay.hotmart.com/') || 
-                               urlValue.startsWith('http://pay.hotmart.com/') || 
-                               urlValue.startsWith('https://payment.hotmart.com/');
+            // Validação de URL exigida (Hotmart) com obrigatoriedade de ID
+            // Aceita: http ou https://pay.hotmart.com/ e exige que tenha caracteres alfa-numéricos depois
+            const regexHotmartComID = /^https?:\/\/(pay|payment)\.hotmart\.com\/([a-zA-Z0-9]{5,})/i;
+            const match = urlValue.match(regexHotmartComID);
 
-            if (!urlValue || !isValidUrl) {
-                errorMsg.innerText = "⚠️ Insira uma URL válida da Hotmart (pay.hotmart.com...)";
+            if (!urlValue || !match) {
+                errorMsg.innerText = "⚠️ Insira a URL completa com o ID do produto (Ex: pay.hotmart.com/J968569...)";
                 errorMsg.style.opacity = '1';
                 inputUrl.style.borderColor = 'var(--neon-magenta)';
                 setTimeout(() => {
@@ -457,10 +471,10 @@
             step2.classList.remove('hidden-el');
 
             // Sequência de animação do terminal
-            await typeTerminal("Iniciando conexão segura...", 30);
+            await typeTerminal("Iniciando conexão quântica segura...", 30);
             await sleep(800);
             
-            await typeTerminal("Analisando chaves de acesso da URL...", 30);
+            await typeTerminal(`Analisando chaves de acesso [${match[2]}]...`, 30);
             await sleep(1000);
             
             await typeTerminal("Identificando o status do produto...", 50);
@@ -477,7 +491,6 @@
             // Revela Botão Final
             await sleep(500);
             btnAccess.classList.remove('hidden-el');
-            // Pequeno delay para a animação de fade-in e slide-up do Tailwind funcionar
             setTimeout(() => {
                 btnAccess.classList.remove('opacity-0', 'translate-y-4');
                 btnAccess.classList.add('opacity-100', 'translate-y-0');
@@ -495,17 +508,26 @@
             // Transição para Etapa 3 (Pagamento)
             step2.style.display = 'none';
             step3.classList.remove('hidden-el');
+
+            // Gera o QR Code dinâmico com estilo futurista
+            const qrcodeContainer = document.getElementById("qrcode");
+            if (qrcodeContainer.innerHTML.trim() === "") {
+                new QRCode(qrcodeContainer, {
+                    text: pixString,
+                    width: 180,
+                    height: 180,
+                    colorDark : "#00f0ff", // Ciano Neon
+                    colorLight : "#000000", // Preto profundo
+                    correctLevel : QRCode.CorrectLevel.L
+                });
+            }
         });
 
         // --- Lógica do Pix Copia e Cola ---
-        const pixString = "00020101021126770014br.gov.bcb.pix0122chavepix@grupobhds.com0229Consulta de Produtos  Hotmart52040000530398654041.005802BR5918BRUNO H DOS SANTOS6008LONDRINA62070503***63043858";
-        
         btnCopyPix.addEventListener('click', () => {
-            // Tenta usar a API moderna de Clipboard
             if (navigator.clipboard && window.isSecureContext) {
                 navigator.clipboard.writeText(pixString).then(() => showCopyFeedback());
             } else {
-                // Fallback para navegadores antigos/mobile
                 const textArea = document.createElement("textarea");
                 textArea.value = pixString;
                 textArea.style.position = "fixed";
@@ -535,20 +557,17 @@
             const fileValue = proofInput.files[0];
             const originalUrl = inputUrl.value.trim();
 
-            // Validação de campos vazios
             if (!wppValue || !fileValue) {
                 formErrorMsg.style.opacity = '1';
                 setTimeout(() => { formErrorMsg.style.opacity = '0'; }, 3000);
                 return;
             }
 
-            // UI de carregamento
             const originalBtnText = btnSendProof.innerText;
             btnSendProof.innerText = "ENVIANDO...";
             btnSendProof.disabled = true;
             btnSendProof.style.opacity = "0.5";
 
-            // Preparando dados para enviar ao backend (Render)
             const formData = new FormData();
             formData.append('whatsapp', wppValue);
             formData.append('url', originalUrl);
