@@ -6,11 +6,8 @@ const axios = require('axios');
 const FormData = require('form-data');
 
 const app = express();
+app.use(cors());
 
-// Permite requisições do seu Github Pages
-app.use(cors()); 
-
-// Configura o multer para armazenar o arquivo em memória temporariamente
 const upload = multer({ storage: multer.memoryStorage() });
 
 app.post('/enviar-comprovante', upload.single('comprovante'), async (req, res) => {
@@ -18,56 +15,53 @@ app.post('/enviar-comprovante', upload.single('comprovante'), async (req, res) =
         const { whatsapp, url } = req.body;
         const file = req.file;
 
-        // Validação de segurança no backend
         if (!whatsapp || !url || !file) {
-            return res.status(400).json({ error: 'Dados incompletos enviados do frontend.' });
+            return res.status(400).json({ error: 'Dados incompletos.' });
         }
 
         const botToken = process.env.TELEGRAM_BOT_TOKEN;
         const chatId = process.env.TELEGRAM_CHAT_ID;
 
-        if (!botToken || !chatId) {
-            console.error("ERRO: Variáveis de ambiente do Telegram ausentes.");
-            return res.status(500).json({ error: 'Configuração interna do servidor ausente.' });
-        }
-
-        // Prepara os dados (multipart/form-data) para a API do Telegram
-        const form = new FormData();
-        form.append('chat_id', chatId);
+        // 1. Enviar o Arquivo
+        const fileForm = new FormData();
+        fileForm.append('chat_id', chatId);
+        fileForm.append('document', file.buffer, { filename: file.originalname });
         
-        // Mensagem que vai aparecer junto com o documento no Telegram
-        const caption = `🟢 *NOVO COMPROVANTE*\n\n📱 *WhatsApp:* ${whatsapp}\n🔗 *URL Original:* ${url}`;
-        form.append('caption', caption);
-        form.append('parse_mode', 'Markdown');
-        
-        // Anexa o arquivo com o nome original
-        form.append('document', file.buffer, { filename: file.originalname });
-
-        // URL da API do Telegram para enviar documentos (funciona para Imagem e PDF)
-        const telegramUrl = `https://api.telegram.org/bot${botToken}/sendDocument`;
-
-        // Envia para o Telegram
-        await axios.post(telegramUrl, form, {
-            headers: form.getHeaders(),
+        await axios.post(`https://api.telegram.org/bot${botToken}/sendDocument`, fileForm, {
+            headers: fileForm.getHeaders(),
         });
 
-        // Retorna sucesso para o frontend
-        res.status(200).json({ success: true, message: 'Comprovante enviado com sucesso!' });
+        // 2. Enviar os Dados (WhatsApp e URL) em uma mensagem separada para garantir o recebimento
+        const textMsg = `✅ *NOVO COMPROVANTE RECEBIDO*\n\n` +
+                        `📱 *WhatsApp:* ${whatsapp}\n` +
+                        `🔗 *URL do Produto:* ${url}`;
+
+        await axios.post(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+            chat_id: chatId,
+            text: textMsg,
+            parse_mode: 'Markdown'
+        });
+
+        res.status(200).json({ success: true });
 
     } catch (error) {
-        // Tratamento específico para o erro 403 (Bot enviando para Bot)
-        if (error.response && error.response.data && error.response.data.error_code === 403) {
-            console.error("Erro 403: O TELEGRAM_CHAT_ID configurado pertence a um bot. Bots não podem enviar mensagens para bots. Use o ID do seu usuário ou grupo.");
-            return res.status(500).json({ error: 'Erro de configuração: ID do Chat inválido (403).' });
-        }
-        
-        console.error("Erro ao enviar para o Telegram:", error.response ? error.response.data : error.message);
-        res.status(500).json({ error: 'Falha ao processar o envio para o Telegram.' });
+        console.error("Erro:", error.response ? error.response.data : error.message);
+        res.status(500).json({ error: 'Erro ao enviar para o Telegram.' });
     }
 });
 
-// Inicializa o servidor na porta configurada pelo Render
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`🚀 Servidor backend rodando na porta ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Rodando na porta ${PORT}`));
+```
+
+---
+
+### 2. Ajuste no Frontend (`index.html`)
+Verifique se a parte do envio no seu script está exatamente assim (garantindo que o `whatsapp` e a `url` entrem no `formData` corretamente):
+
+```javascript
+// Dentro do evento click do btnSendProof:
+const formData = new FormData();
+formData.append('whatsapp', wppValue); // Pega o valor do input do WhatsApp
+formData.append('url', originalUrl);   // Pega a URL que o usuário colou no início
+formData.append('comprovante', fileValue); // O arquivo do comprovante
