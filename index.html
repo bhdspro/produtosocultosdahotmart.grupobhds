@@ -319,7 +319,7 @@
             <h2 class="text-xl md:text-2xl text-center font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-cyan-500 font-['Orbitron'] glitch-effect">
                 ACESSO LIBERADO
             </h2>
-            <p class="text-center text-xs md:text-sm text-gray-300 leading-tight">Realize o pagamento de R$1,00 para finalizar o desbloqueio!</p>
+            <p class="text-center text-xs md:text-sm text-gray-300 leading-tight">Realize o pagamento de R$5,00 para finalizar o desbloqueio!</p>
 
             <!-- QR Code Dinâmico Futurista -->
             <div class="p-2 rounded-xl relative w-full flex justify-center mt-1">
@@ -449,7 +449,7 @@
         const formErrorMsg = document.getElementById('form-error-msg');
 
         // String PIX solicitada
-        const pixString = "00020101021126770014br.gov.bcb.pix0122chavepix@grupobhds.com0229Consulta de Produtos HTM52040000530398654041.005802BR5918BRUNO H DOS SANTOS6008LONDRINA62070503***63043858";
+        const pixString = "00020101021126640014br.gov.bcb.pix0122chavepix@grupobhds.com0216Consulta HotList52040000530398654045.005802BR5918BRUNO H DOS SANTOS6008LONDRINA62070503***63040490";
 
         // Função de utilidade para pausas assíncronas
         const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -536,8 +536,8 @@
             if (qrcodeContainer.innerHTML.trim() === "") {
                 new QRCode(qrcodeContainer, {
                     text: pixString,
-                    width: 180, // Reduzido
-                    height: 180, // Reduzido
+                    width: 170, // Reduzido
+                    height: 170, // Reduzido
                     colorDark : "#00f0ff", // Ciano Neon
                     colorLight : "#000000", // Preto profundo
                     correctLevel : QRCode.CorrectLevel.L
